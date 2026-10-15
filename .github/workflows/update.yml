@@ -2,7 +2,7 @@ name: update
 
 on:
   schedule:
-    - cron: "17 * * * *"   # hourly, off the hour
+    - cron: "17 6 * * *"   # daily, 06:17 UTC
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ jobs:
       - uses: cachix/install-nix-action@v31
 
       - name: Read the npm release feed
-        run: ./update.sh
+        run: nix develop --command ./update.sh
 
       - name: Stop here if nothing changed
         id: diff
@@ -41,4 +41,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add release.json package-lock.json
           git commit -m "cf ${{ steps.diff.outputs.version }}"
-          git push
+          git tag "v${{ steps.diff.outputs.version }}"
+          git push --atomic origin HEAD "v${{ steps.diff.outputs.version }}"

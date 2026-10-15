@@ -36,8 +36,8 @@ Systems: x86_64-linux and aarch64-linux. Binaries: `cf`, `cloudflare`.
 - `update.sh` reads `https://registry.npmjs.org/cf/latest`, regenerates `package-lock.json`, and
   writes `release.json` (version, tarball URL, npm's SRI integrity hash, `npmDepsHash`). Needs
   `jq`, `curl`, `npm`, `prefetch-npm-deps` (all in `nix develop`).
-- `.github/workflows/update.yml` runs it hourly, builds, checks `cf --version` matches, and commits
-  `release.json` and `package-lock.json` if they changed.
+- `.github/workflows/update.yml` runs it daily, builds, checks `cf --version` matches, and commits
+  `release.json` and `package-lock.json` if they changed, and tags the commit `v<version>`.
 - `package.nix` only reads `release.json`; it has no version of its own.
 
 Update by hand: `nix develop -c ./update.sh && nix build`.
